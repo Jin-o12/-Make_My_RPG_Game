@@ -200,8 +200,8 @@ void Character::EquipItem(int invenNum)
 	else
 	{
 		ItemObject* nowEquip = this->GetEquipItemByIndex(equipType - 1);
-		Item* nowInven = thisInventory_[invenNum-1]->pItemObj;
-		Item* temp;
+		ItemObject* nowInven = thisInventory_[invenNum-1];
+		ItemObject* temp;
 
 		temp = nowInven;
 		nowInven = nowEquip;
