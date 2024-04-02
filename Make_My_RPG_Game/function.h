@@ -31,6 +31,9 @@ const char* GetStageName(StageType type)
 	case STATUS:
 		return "캐릭터 정보";
 		break;
+	case SAVE:
+		return "저장";
+		break;
 	default:
 		break;
 	}
@@ -64,7 +67,10 @@ void BettleTimeLine(Object* pFirst, Object* pSecond)
 {
 	cout << (pFirst->GetName()) << "의 공격! " << pSecond->GetDemage(pFirst->Getattack()) << "의 데미지!" << endl;
 	if (pSecond->GetHP() <= 0)
+	{
 		pFirst->Kill(pSecond);
+		return;
+	}
 	cout << (pSecond->GetName()) << "의 공격! " << pFirst->GetDemage(pSecond->Getattack()) << "의 데미지!" << endl;
 	if (pFirst->GetHP() <= 0)
 		pFirst->Dead();

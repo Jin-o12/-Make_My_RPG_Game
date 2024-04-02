@@ -55,6 +55,7 @@ public:
 
 	virtual void Kill(const Object* obj);
 	virtual void Dead();
+	virtual void Save(FILE* pFile);
 
 	//GET_INTERFACE 함수 (값 반환 없이 정해진 형식대로 정보 출력)
 	void GetInterFace_PlayerStatus();

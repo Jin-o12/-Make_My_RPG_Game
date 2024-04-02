@@ -10,6 +10,12 @@ enum jobType : int
 	JOB_END
 };
 
+enum LoadType
+{
+	CREATE,
+	LOAD
+};
+
 enum StageType : int
 {
 	EXIT_GAME,
@@ -17,6 +23,7 @@ enum StageType : int
 	LODGE,
 	SHOP,
 	STATUS,
+	SAVE,
 	STAGE_END
 };
 

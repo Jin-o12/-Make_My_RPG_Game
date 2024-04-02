@@ -13,7 +13,7 @@ void Skill::UseSkillEffect(Object* target)
 	cout << target->GetName() << "에게 " << this->GetName() << "사용" << endl;
 	((*this).*skillFunc)(target);
 }
-Skill* SkillManager::skillList[]{};		//static 변수 초기화
+Skill* SkillManager::skillList[]{};	//static 변수 초기화
 
 
 

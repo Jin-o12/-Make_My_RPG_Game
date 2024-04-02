@@ -245,7 +245,7 @@ void Character::Kill(const Object* obj)
 	}
 	int money = obj->Getmoney();
 	cout << money << "ÀÇ µ·À» È¹µæÇß½À´Ï´Ù." << endl;
-	money_ = money;
+	money_ += money;
 }
 
 void Character::Dead()
@@ -341,4 +341,10 @@ void Character::GetInterFace_EquipList()
 	{
 		cout << "(  ÀåÂøµÈ Àåºñ°¡ ¾ø½À´Ï´Ù.  )" << endl;
 	}
+}
+
+
+void Character::Save(FILE* pFile)
+{
+	Object::Save(pFile);
 }

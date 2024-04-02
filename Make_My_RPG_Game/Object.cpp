@@ -2,6 +2,9 @@
 
 #include "Object.h"
 
+SkillManager skillManager;
+
+
 const char* Object::GetName()  { return name_; }
 int Object::Getattack() const  { return attack_; }
 int Object::Getdefense() const  { return defense_; }
@@ -41,3 +44,22 @@ void Object::DEFchange(int getDEF) { this->defense_ += getDEF; }
 void Object::SPDchange(int getSPD) { this->speed_ += getSPD; }
 
 
+void Object::Save(FILE* pFile)
+{
+	fwrite(name_, sizeof(char), strlen(name_), pFile);
+	fwrite(&attack_, sizeof(int), 1, pFile);
+	fwrite(&defense_, sizeof(int), 1, pFile);
+	fwrite(&HP_, sizeof(int), 1, pFile);
+	fwrite(&MP_, sizeof(int), 1, pFile);
+	fwrite(&speed_, sizeof(int), 1, pFile);
+	fwrite(&money_, sizeof(int), 1, pFile);
+	fwrite(&level_, sizeof(int), 1, pFile);
+	fwrite(&exp_, sizeof(int), 1, pFile);
+	
+	for (size_t i = 0; i < SKILL_MAX; i++)
+	{
+		//fwrite(skillManager.SearchSkillCodeByName(thisSkillList_[i]->GetName()), sizeof(int), 1, pFile);
+	}
+	
+	//ItemObject* thisInventory_[INVENTORY_SIZE] = { nullptr };
+}

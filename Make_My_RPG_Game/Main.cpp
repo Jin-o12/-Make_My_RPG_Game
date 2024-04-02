@@ -26,6 +26,8 @@ void ShowLodge(StageType stage);
 void ShowShop(StageType stage);
 void ShowStatus(StageType stage);
 void Bettle(DungeonLevel level);
+bool Load(const char* pFileName);
+void Save(const char* pFileName);
 
 int userAnswerInt;
 char userAnswerChar;
@@ -110,6 +112,9 @@ bool ShowStage()
 	case STATUS:
 		ShowStatus(static_cast<StageType>(userAnswerInt - 1));
 		break;
+	case SAVE:
+		Save("save.txt");
+		break;
 	default:
 		break;
 	}
@@ -130,6 +135,7 @@ void ShowLodge(StageType level)
 	while (true)
 	{
 		cout << "┌======================== " << GetStageName(level) << " ========================┐" << endl;
+		cout << "│0. 돌아가기									   │" << endl;
 		cout << "│1. 한끼 식사		>  2G    [+ 5  HP] [+ 0  MP]   │" << endl;
 		cout << "│2. 푸짐한 식사		>  5G    [+ 10 HP] [+ 0  MP]   │" << endl;
 		cout << "│3. 일반 침대		>  10G   [+ 20 HP] [+ 5  MP]   │" << endl;
@@ -139,27 +145,38 @@ void ShowLodge(StageType level)
 
 		int hp = 0;
 		int mp = 0;
+		bool playerBuy = 0;
 		switch (userAnswerInt - 1)
 		{
+		case -1:
+			return;
 		case FOOD:
-			player.BuySometing(2);
+			playerBuy= player.BuySometing(2);
+			if (!playerBuy)
+				break;
 			player.HPchange(5);
 			hp = 5;
 			break;
 		case DINNER:
-			player.BuySometing(5);
+			playerBuy = player.BuySometing(5);
+			if (!playerBuy)
+				break;
 			player.HPchange(10);
 			hp = 10;
 			break;
 		case BED:
-			player.BuySometing(10);
+			playerBuy = player.BuySometing(10);
+			if (!playerBuy)
+				break;
 			player.HPchange(20);
 			player.MPchange(5);
 			hp = 20;
 			mp = 5;
 			break;
 		case FLUFFYBED:
-			player.BuySometing(20);
+			playerBuy = player.BuySometing(20);
+			if (!playerBuy)
+				break;
 			player.HPchange(40);
 			player.MPchange(10);
 			hp = 40;
@@ -169,7 +186,7 @@ void ShowLodge(StageType level)
 			break;
 		}
 
-		if (hp >= 0 || mp >=0)
+		if ((hp >= 0 || mp >=0) && playerBuy)
 		{
 			cout << "체력이 " << hp << "만큼, 마나가 " << mp << "회복되었습니다" << endl;
 			player.GetInterFace_PlayerStatus();
@@ -230,9 +247,10 @@ void ShowShop(StageType level)
 			else if (!(userAnswerChar == 'n' || userAnswerChar == 'N'))
 			{
 				cout << "Y 혹은 N 만 입력해주세요" << endl;
+				system("pause");
 			}
-			system("cls");
 		}
+		system("cls");
 	}
 }
 
@@ -273,6 +291,7 @@ void Bettle(DungeonLevel level)
 
 	while (true)
 	{
+		system("cls");
 		cout << "┌================" << GetDungeonName(level) << " 던전 ================┐" << endl;
 		pMonster->GetInterFace_MonsterStatus();
 		player.GetInterFace_PlayerStatus();
@@ -332,20 +351,12 @@ void Bettle(DungeonLevel level)
 			break;
 		}
 
-		if (pMonster->GetHP() <= 0)
+		if (pMonster->GetHP() <= 0 || player.GetHP() <= 0)
 		{
-			player.Kill(pMonster);
 			system("pause");
-			system("cls");
-			return;
-		}	
-		else if(player.GetHP() <= 0)
-		{
-			player.Dead();
-			system("pause");
-			system("cls");
 			return;
 		}
+		system("pause");
 	}
 }
 
@@ -354,11 +365,76 @@ int main()
 	IntalizeGameOption();
 	SkillManager::GetInst()->initSkillList();
 	ItemManager::GetInst()->initItemList();
-	CreatePlayer();	
-	
+
+	bool isLoad = false;
+	while (!isLoad)
+	{
+		system("cls");
+		cout << "1. 새 캐릭터 생성" << endl;
+		cout << "2. 불러오기" << endl;
+		int select = -1;
+		cin >> select;
+		switch (select - 1)
+		{
+		case CREATE:
+			CreatePlayer();
+			isLoad = true;
+			break;
+		case LOAD:
+			isLoad = Load("save.txt");
+			break;
+		}
+	}
+
 	while (ShowStage());
 	return 0;
 }
+
+bool Load(const char* pFileName)
+{
+	bool result = false;
+	FILE* pFile;
+	fopen_s(&pFile, pFileName, "rt");
+	if (pFile == nullptr)
+	{
+		cout << "불러올 파일이 존재하지 않습니다." << endl;
+		result = false;
+		system("pause");
+	}
+	else
+	{
+		char name[20] = "";
+		fread(name, sizeof(char), 20, pFile);
+		fclose(pFile);
+
+		cout << name << "의 정보를 불러왔습니다" << endl;
+		result = true;
+		system("pause");
+	}
+	fclose(pFile);
+	return result;
+}
+
+void Save(const char* pFileName)
+{
+	FILE* pFile;
+	fopen_s(&pFile, pFileName, "wt");
+	fwrite(player.GetName(), sizeof(char), strlen(player.GetName()), pFile);
+	fclose(pFile);
+	cout << "파일이 저장되었습니다." << endl;
+	system("pause");
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -381,8 +457,6 @@ int main()
  - 장비 능력치 적용 (기존 능력치 + 추가 능력치 형태로 표시)
 
 +)
-> 전투에서 아이템 사용
-*/
 
 
 

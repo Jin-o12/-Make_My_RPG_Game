@@ -51,6 +51,7 @@ public:
 
 	virtual void Kill(const Object* obj) {};
 	virtual void Dead() {};
+	virtual void Save(FILE* pFile);
 
 	
 };
